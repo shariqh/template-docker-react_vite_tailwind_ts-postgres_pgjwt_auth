@@ -1,0 +1,57 @@
+# Node.js and Package Manager
+node_modules
+.pnpm-store
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# TypeScript Build Outputs
+dist/
+*.tsbuildinfo
+
+# Logs and Debugging
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Editor Settings and Backups
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# Turbo Cache
+turbo/
+turbo.json
+
+# Docker Build Artifacts
+docker-compose.override.yml
+docker-compose.override.yaml
+.env
+.env.local
+
+# Output and Cache
+.cache
+.tmp
+
+# Postgres Data (Prevents Persisted Data in Git)
+db/postgres-data/
+pgdata/
+
+# Jest and Testing
+coverage/
+*.lcov
+
+# MacOS Files
+**/.DS_Store
+
+# Production Only Builds (Optional)
+*.bak
+*.old
+*.out
+
+# Git Ignore Overrides
+!.gitignore
