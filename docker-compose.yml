@@ -13,7 +13,8 @@ services:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   auth-server:
-    build: ./auth-server
+    build: 
+      context: ./auth-server
     container_name: auth-server
     ports:
       - '4000:4000'
@@ -24,7 +25,8 @@ services:
       - db
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
     container_name: frontend
     ports:
       - '3000:3000'
