@@ -5,18 +5,23 @@ export default function Login() {
   const [password, setPassword] = useState('');
 
   async function handleLogin() {
-    const response = await fetch('http://localhost:4000/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch('http://localhost:4000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (response.ok) {
-      const { token } = await response.json();
-      localStorage.setItem('token', token);
-      window.location.href = '/dashboard';
-    } else {
-      alert('Invalid login');
+      if (response.ok) {
+        const { token } = await response.json();
+        localStorage.setItem('token', token);
+        window.location.href = '/dashboard';
+      } else {
+        alert('Invalid login');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('Network error. Please try again later.');
     }
   }
 
