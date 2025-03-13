@@ -1,22 +1,41 @@
-# Use official Node.js image
-FROM node:20
+# Stage 1: Build Stage
+FROM node:20 as builder
 
-# Set working directory
+RUN npm install -g pnpm
+
 WORKDIR /app
 
-# Copy package files and install dependencies
-COPY package*.json ./
-RUN npm install
+COPY ./pnpm-lock.yaml ./
+COPY ./package.json ./
 
-# Copy the rest of the code
+# ✅ Install dependencies using pnpm
+RUN pnpm install --frozen-lockfile --prod=false
+
+# ✅ Copy the rest of the code
 COPY . .
 
-# Build the frontend
-RUN npm run build
+# ✅ Build frontend
+RUN pnpm run build
 
-# Serve the frontend using a lightweight web server
+# Stage 2: Production Stage
+FROM node:20-slim as runner
+
+WORKDIR /app
+
+# ✅ Copy compiled frontend files from builder stage
+COPY --from=builder /app/dist ./dist
+
+# ✅ Install only production dependencies using npm
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/pnpm-lock.yaml ./
+COPY --from=builder /app/node_modules ./node_modules
+
+# ✅ Install serve to host static files
 RUN npm install -g serve
-CMD ["serve", "-s", "dist"]
 
-# Expose port 3000
+RUN rm -rf ~/.pnpm-store
+
 EXPOSE 3000
+
+# ✅ Serve static files using `serve`
+CMD ["serve", "-s", "dist", "-l", "3000"]
