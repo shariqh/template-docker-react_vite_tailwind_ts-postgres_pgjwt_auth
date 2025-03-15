@@ -6,7 +6,7 @@ export default function Login() {
 
   async function handleLogin() {
     try {
-      const response = await fetch('http://localhost:4000/login', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -14,7 +14,7 @@ export default function Login() {
 
       if (response.ok) {
         const { token } = await response.json();
-        localStorage.setItem('token', token);
+        localStorage.setItem(import.meta.env.VITE_AUTH_TOKEN_KEY as string, token);
         window.location.href = '/dashboard';
       } else {
         alert('Invalid login');

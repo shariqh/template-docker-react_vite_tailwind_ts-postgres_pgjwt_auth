@@ -1,4 +1,3 @@
-TODO: move vars to .env instead of hardcoding
 TODO: migrate to turborepo (if possible? gotta learn it)
 
 # 🚀 Full Stack Project with PostgreSQL + pgjwt + TypeScript + React + Docker + Turbo + pnpm

@@ -5,7 +5,7 @@ export default function Dashboard() {
       <button
         className="ml-4 bg-red-500 text-white px-4 py-2"
         onClick={() => {
-          localStorage.removeItem('token');
+          localStorage.removeItem(import.meta.env.VITE_AUTH_TOKEN_KEY as string);
           window.location.href = '/';
         }}
       >
