@@ -1,4 +1,3 @@
-TODO: move vars to .env instead of hardcoding
 TODO: migrate to turborepo (if possible? gotta learn it)
 
 # 🚀 Full Stack Project with PostgreSQL + pgjwt + TypeScript + React + Docker + Turbo + pnpm
@@ -22,19 +21,32 @@ This project provides a robust and scalable template for building a **full-stack
 - React frontend with Tailwind styling  
 - Docker Compose for consistent local development  
 - Fast builds using Turbo caching and pnpm's virtual store  
+- Comprehensive Jest-based testing suite for both frontend and backend
+- Modern React Testing Library for component testing
 
 ## 🏗️ **Project Structure**
 ```plaintext
 project/
-├── apps/                   # Holds backend + frontend
-│   ├── backend/            # Backend service (Express + TypeScript)
-│   ├── frontend/           # Frontend service (React + Vite)
+├── auth-server/            # Backend service (Express + TypeScript)
+│   ├── src/                # Source code
+│   │   ├── index.ts        # Main entry point
+│   │   └── index.test.ts   # API tests
+│   ├── jest.config.js      # Jest configuration
+│   └── tsconfig.json       # TypeScript configuration
+├── frontend/               # Frontend service (React + Vite)
+│   ├── src/                # Source code
+│   │   ├── pages/          # React components
+│   │   │   ├── Login.tsx   # Login component
+│   │   │   ├── Login.test.tsx # Login component tests
+│   │   │   ├── Dashboard.tsx # Dashboard component
+│   │   │   └── Dashboard.test.tsx # Dashboard component tests
+│   ├── jest.config.js      # Jest configuration
+│   └── tsconfig.json       # TypeScript configuration
 ├── db/                     # Database setup (Postgres + pgjwt)
-├── turbo.json              # Turbo config
+├── CLAUDE.md               # Project guidelines and commands
 ├── docker-compose.yml      # Docker orchestration
 ├── .env                    # Local environment configuration
-├── .gitignore
-└── pnpm-workspace.yaml
+└── .gitignore
 ```
 
 ## 🛠️ **Setup Instructions**
@@ -166,17 +178,34 @@ curl -X GET http://localhost:4000/dashboard \
 pnpm test
 ```
 
-### ✅ Run Backend Tests:
+### ✅ Run Auth Server Tests:
 
-``` sh
-pnpm --filter backend test
+```sh
+cd auth-server && pnpm test
 ```
 
 ### ✅ Run Frontend Tests:
 
 ```sh
-pnpm --filter frontend test
+cd frontend && pnpm test
 ```
+
+### ✅ Run Tests in Watch Mode:
+
+```sh
+cd [auth-server|frontend] && pnpm test:watch
+```
+
+### ✅ Run Specific Test:
+
+```sh
+cd [auth-server|frontend] && pnpm test -t "test name"
+```
+
+### 🔹 Testing Stack:
+- **Auth Server**: Jest + ts-jest + supertest for API testing
+- **Frontend**: Jest + React Testing Library for component testing
+- **Coverage Reports**: Generate with `pnpm test -- --coverage`
 
 ## 🐳 Docker Overview
 ### 🔹 Database

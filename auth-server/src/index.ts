@@ -9,7 +9,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-const port = 4000;
+const port = parseInt(process.env.PORT || '4000', 10);
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -20,7 +20,7 @@ app.use(express.json());
 // ✅ Allow CORS for frontend origin
 app.use(
   cors({
-    origin: 'http://localhost:3000', // Allow frontend to make requests
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000', // Allow frontend to make requests
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true, // Allow cookies and authentication headers

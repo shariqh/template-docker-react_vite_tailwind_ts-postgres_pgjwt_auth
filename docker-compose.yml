@@ -18,9 +18,8 @@ services:
     container_name: auth-server
     ports:
       - '4000:4000'
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/authdb
-      JWT_SECRET: your-secret-key
+    env_file:
+      - ./auth-server/.env
     depends_on:
       - db
 
@@ -30,5 +29,7 @@ services:
     container_name: frontend
     ports:
       - '3000:3000'
+    env_file:
+      - ./frontend/.env
     depends_on:
       - auth-server
