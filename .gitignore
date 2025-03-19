@@ -21,9 +21,12 @@ pnpm-debug.log*
 *.swp
 *.swo
 
-# Turbo Cache
-turbo/
-turbo.json
+# Turbo
+.turbo
+**/.turbo
+.next/**
+build/**
+dist/**
 
 # Docker Build Artifacts
 docker-compose.override.yml

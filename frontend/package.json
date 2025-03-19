@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "start": "vite",
     "test": "jest",
     "test:watch": "jest --watch",
-    "lint": "eslint .",
+    "lint": "eslint . --ext .ts,.tsx",
+    "clean": "rm -rf dist node_modules",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -27,6 +28,8 @@
     "@types/jest": "^29.5.12",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.21.0",
