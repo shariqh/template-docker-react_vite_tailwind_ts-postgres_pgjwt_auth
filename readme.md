@@ -100,13 +100,18 @@ docker compose up --build auth-server
 
 **Local Development:**
 ```sh
-# Start all services
+# First, start the database (required)
+docker compose up db
+
+# In a new terminal, start services locally
 pnpm dev
 
-# Start specific service
+# Or start specific services
 pnpm --filter auth-server dev
 pnpm --filter frontend dev
 ```
+
+> **Note:** The PostgreSQL database must always run in Docker due to the custom `pgjwt` extension setup. Even when developing locally, you'll need to run `docker compose up db` to have a working database.
 
 ### ✅ 5. Build
 ```sh
