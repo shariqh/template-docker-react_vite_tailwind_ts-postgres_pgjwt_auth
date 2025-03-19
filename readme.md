@@ -1,5 +1,3 @@
-TODO: migrate to turborepo (if possible? gotta learn it)
-
 # 🚀 Full Stack Project with PostgreSQL + pgjwt + TypeScript + React + Docker + Turbo + pnpm
 
 This is a **modern full-stack project** that combines:
