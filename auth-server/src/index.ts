@@ -1,10 +1,8 @@
-import pkg from 'pg';
-const { Pool } = pkg;
-
-import express, { Request, Response, NextFunction } from 'express';
-import cors from 'cors';
-import bcrypt from 'bcryptjs';
-import * as dotenv from 'dotenv';
+const { Pool } = require('pg');
+const express = require('express');
+const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const dotenv = require('dotenv');
 
 dotenv.config();
 
@@ -27,7 +25,7 @@ app.use(
   })
 );
 
-app.post('/login', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+app.post('/login', async (req: any, res: any, next: any): Promise<void> => {
   try {
     const { email, password } = req.body;
 
@@ -52,7 +50,7 @@ app.post('/login', async (req: Request, res: Response, next: NextFunction): Prom
   }
 });
 
-app.get('/dashboard', (req: Request, res: Response, next: NextFunction): void => {
+app.get('/dashboard', (req: any, res: any, next: any): void => {
   try {
     const authHeader = req.headers['authorization'];
     if (!authHeader) {

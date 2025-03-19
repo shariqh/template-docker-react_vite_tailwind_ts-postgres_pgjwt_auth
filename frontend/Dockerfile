@@ -1,41 +1,38 @@
 # Stage 1: Build Stage
 FROM node:20 as builder
 
+# Install pnpm
 RUN npm install -g pnpm
 
 WORKDIR /app
 
-COPY ./pnpm-lock.yaml ./
-COPY ./package.json ./
+# Copy workspace files first
+COPY pnpm-workspace.yaml ./
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+COPY turbo.json ./
 
-# ✅ Install dependencies using pnpm
-RUN pnpm install --frozen-lockfile --prod=false
+# Copy the frontend package
+COPY frontend frontend/
 
-# ✅ Copy the rest of the code
-COPY . .
+# Install dependencies within workspace context
+RUN pnpm install --frozen-lockfile
 
-# ✅ Build frontend
-RUN pnpm run build
+# Build the frontend
+RUN pnpm --filter frontend build
 
 # Stage 2: Production Stage
 FROM node:20-slim as runner
 
 WORKDIR /app
 
-# ✅ Copy compiled frontend files from builder stage
-COPY --from=builder /app/dist ./dist
-
-# ✅ Install only production dependencies using npm
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/pnpm-lock.yaml ./
-COPY --from=builder /app/node_modules ./node_modules
-
-# ✅ Install serve to host static files
+# Install serve to host static files
 RUN npm install -g serve
 
-RUN rm -rf ~/.pnpm-store
+# Copy only the built files (no node_modules needed for static serving)
+COPY --from=builder /app/frontend/dist ./dist
 
 EXPOSE 3000
 
-# ✅ Serve static files using `serve`
+# Serve static files
 CMD ["serve", "-s", "dist", "-l", "3000"]

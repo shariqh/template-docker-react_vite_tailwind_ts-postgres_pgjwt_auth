@@ -14,7 +14,8 @@ services:
 
   auth-server:
     build: 
-      context: ./auth-server
+      context: .
+      dockerfile: auth-server/Dockerfile
     container_name: auth-server
     ports:
       - '4000:4000'
@@ -25,7 +26,8 @@ services:
 
   frontend:
     build: 
-      context: ./frontend
+      context: .
+      dockerfile: frontend/Dockerfile
     container_name: frontend
     ports:
       - '3000:3000'

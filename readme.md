@@ -28,112 +28,189 @@ This project provides a robust and scalable template for building a **full-stack
 ```plaintext
 project/
 ├── auth-server/            # Backend service (Express + TypeScript)
-│   ├── src/                # Source code
-│   │   ├── index.ts        # Main entry point
-│   │   └── index.test.ts   # API tests
-│   ├── jest.config.js      # Jest configuration
-│   └── tsconfig.json       # TypeScript configuration
-├── frontend/               # Frontend service (React + Vite)
-│   ├── src/                # Source code
-│   │   ├── pages/          # React components
-│   │   │   ├── Login.tsx   # Login component
-│   │   │   ├── Login.test.tsx # Login component tests
-│   │   │   ├── Dashboard.tsx # Dashboard component
-│   │   │   └── Dashboard.test.tsx # Dashboard component tests
-│   ├── jest.config.js      # Jest configuration
-│   └── tsconfig.json       # TypeScript configuration
-├── db/                     # Database setup (Postgres + pgjwt)
-├── CLAUDE.md               # Project guidelines and commands
-├── docker-compose.yml      # Docker orchestration
-├── .env                    # Local environment configuration
+│   ├── src/               # Source code
+│   │   ├── index.ts       # Main entry point
+│   │   └── index.test.ts  # API tests
+│   ├── Dockerfile         # Service-specific Docker config
+│   ├── jest.config.js     # Jest configuration
+│   └── tsconfig.json      # TypeScript configuration
+├── frontend/              # Frontend service (React + Vite)
+│   ├── src/              # Source code
+│   │   └── pages/        # React components
+│   ├── Dockerfile        # Service-specific Docker config
+│   ├── jest.config.js    # Jest configuration
+│   └── tsconfig.json     # TypeScript configuration
+├── db/                    # Database setup (Postgres + pgjwt)
+├── turbo.json            # Turborepo configuration
+├── pnpm-workspace.yaml   # PNPM workspace config
+├── package.json          # Root package.json for workspace
+├── docker-compose.yml    # Docker orchestration
+├── .env                  # Local environment configuration
 └── .gitignore
 ```
 
 ## 🛠️ **Setup Instructions**
-Follow these steps to get the project up and running locally.
 
-### ✅ 1. Clone the Repository
+### ✅ 1. Prerequisites
+- Node.js 20 or later
+- pnpm (`npm install -g pnpm`)
+- Docker and Docker Compose
 
+### ✅ 2. Clone and Install
 ```sh
-git clone git@github.com:yourusername/project.git
+# Clone the repository
+git clone <repository-url>
 cd project
-```
----
 
-### ✅ 2. Install Dependencies
-Using pnpm for fast dependency management and efficient disk usage.
-
-```sh
+# Install dependencies
 pnpm install
 ```
----
 
-### ✅ 3. Create a .env File
-Create a .env file in the root directory and configure your environment:
+### ✅ 3. Environment Setup
+Create `.env` files:
 
+**Root .env:**
 ```sh
-# Backend
+# Shared environment variables
+NODE_ENV=development
+```
+
+**auth-server/.env:**
+```sh
 DATABASE_URL=postgresql://postgres:postgres@db:5432/authdb
 JWT_SECRET=your-secret-key
+PORT=4000
+```
 
-# Frontend
+**frontend/.env:**
+```sh
 VITE_API_BASE_URL=http://localhost:4000
 ```
 
-**Explanation:**
+### ✅ 4. Development
 
-- `DATABASE_URL` → Connection string for PostgreSQL 
-- `JWT_SECRET` → Secret key for signing JWTs
-- `VITE_API_BASE_URL` → API base URL for the frontend
-
----
-
-### ✅ 4. Build and Start the Project
-Build and start the project using Docker Compose:
-
+**Using Docker (recommended):**
 ```sh
-docker-compose up --build
+# Start all services
+docker compose up --build
+
+# Start specific service
+docker compose up --build auth-server
 ```
 
-**This will:**
-
-Start the PostgreSQL container
-Start the backend (Express) container
-Start the frontend (React) container
-
----
-
-### ✅ 5. Running Backend + Frontend Directly (Without Docker)
-You can also run the backend and frontend locally:
-
-Backend:
+**Local Development:**
 ```sh
-pnpm --filter backend dev
-```
+# Start all services
+pnpm dev
 
-Frontend:
-```sh
+# Start specific service
+pnpm --filter auth-server dev
 pnpm --filter frontend dev
 ```
 
----
-
-### ✅ 6. Reset State (Clean Build)
-If you want to reset and rebuild everything from scratch:
-
+### ✅ 5. Build
 ```sh
-docker-compose down -v
-pnpm clean
-docker-compose up --build
+# Build all packages
+pnpm build
+
+# Build specific package
+pnpm --filter auth-server build
 ```
 
-**This will:**
+### ✅ 6. Test
+```sh
+# Test all packages
+pnpm test
 
-- Remove all Docker volumes
-- Clean out dependencies
-- Rebuild everything from scratch
+# Test specific package
+pnpm --filter auth-server test
+```
 
----
+## 🚀 Turborepo Features
+
+### Cache Management
+Turbo caches build outputs for faster subsequent builds:
+```sh
+# Clear Turbo's cache
+pnpm turbo clean
+
+# Build with remote caching (if configured)
+pnpm build --remote-only
+```
+
+### Workspace Scripts
+Common scripts available in the root:
+- `pnpm dev` - Start development servers
+- `pnpm build` - Build all packages
+- `pnpm test` - Run tests
+- `pnpm lint` - Lint all packages
+- `pnpm clean` - Clean build outputs
+
+### Dependencies
+- Adding dependencies:
+  ```sh
+  # Add to specific package
+  pnpm --filter auth-server add express
+
+  # Add to all packages
+  pnpm add -w typescript
+  ```
+
+## 🐳 Docker Configuration
+
+Each service has its own Dockerfile optimized for the monorepo structure:
+
+### Build Process
+1. Copies workspace configuration (pnpm-workspace.yaml, package.json)
+2. Installs dependencies using pnpm
+3. Builds the service using Turbo
+4. Creates optimized production image
+
+### Running Services
+```sh
+# Start all services
+docker compose up --build
+
+# Start specific service
+docker compose up --build auth-server
+
+# Reset everything
+docker compose down -v
+docker compose up --build
+```
+
+## 🔧 Common Issues
+
+### ❌ Module Resolution Errors
+If you see module not found errors:
+```sh
+# Clean all caches and node_modules
+pnpm clean
+
+# Reinstall dependencies
+pnpm install
+```
+
+### ❌ Docker Build Issues
+If Docker builds fail:
+```sh
+# Remove all containers and volumes
+docker compose down -v
+
+# Rebuild with clean cache
+docker compose build --no-cache
+```
+
+### ❌ Database Issues
+If database connections fail:
+```sh
+# Check database logs
+docker compose logs db
+
+# Reset database
+docker compose down -v
+docker compose up db
+```
 
 ## 🌍 **Usage**
 
@@ -206,54 +283,6 @@ cd [auth-server|frontend] && pnpm test -t "test name"
 - **Auth Server**: Jest + ts-jest + supertest for API testing
 - **Frontend**: Jest + React Testing Library for component testing
 - **Coverage Reports**: Generate with `pnpm test -- --coverage`
-
-## 🐳 Docker Overview
-### 🔹 Database
-PostgreSQL container
-pgjwt installed via custom Dockerfile
-Auto-seeding of initial data
-
-### 🔹 Backend
-TypeScript → Compiled to JS
-Runs inside container
-Exposes port 4000
-
-### 🔹 Frontend
-Vite-based React app
-Hot reloading
-Exposes port 3000
-
-## 🚀 Common Issues + Fixes
-❌ `EADDRINUSE: Address already in use`
-
-**Kill any existing processes:**
-
-```sh
-lsof -i :4000
-kill -9 <PID>
-```
-
-❌ `relation "users" does not exist`
-- Make sure the database init script is running:
-
-```sh
-docker logs pgjwt-db
-```
-
-- If the init script fails, reset the containers:
-
-```sh
-docker-compose down -v
-docker-compose up --build
-```
-
-❌ `pgjwt extension is not available`
-- Make sure you’re using the custom Dockerfile to install pgjwt:
-
-```sh
-docker-compose down -v
-docker-compose up --build
-```
 
 ## 🚢 Deployment
 

@@ -1,8 +1,7 @@
 {
-  "name": "backend",
+  "name": "auth-server",
   "version": "1.0.0",
   "main": "index.ts",
-  "type": "module",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -19,6 +18,9 @@
     "@types/node": "^20.11.20",
     "@types/pg": "^8.6.5",
     "@types/supertest": "^6.0.2",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.56.0",
     "jest": "^29.7.0",
     "supertest": "^6.3.4",
     "ts-jest": "^29.1.2",
@@ -26,10 +28,12 @@
     "typescript": "^5.4.0"
   },
   "scripts": {
-    "dev": "npm run build && node dist/index.js",
+    "dev": "ts-node src/index.ts",
     "build": "tsc",
     "test": "jest",
     "test:watch": "jest --watch",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist node_modules",
+    "lint": "eslint . --ext .ts"
   }
 }

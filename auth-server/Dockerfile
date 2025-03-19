@@ -6,34 +6,34 @@ RUN npm install -g pnpm
 
 WORKDIR /app
 
-# ✅ Copy package files + pnpm lockfile from auth-server
-COPY ./pnpm-lock.yaml ./
-COPY ./package.json ./
+# Copy workspace files first
+COPY pnpm-workspace.yaml ./
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+COPY turbo.json ./
 
-# ✅ Install dependencies using pnpm
-RUN pnpm install --frozen-lockfile --prod=false
+# Copy the auth-server package
+COPY auth-server auth-server/
 
-# ✅ Copy the rest of the code
-COPY . .
+# Install dependencies within workspace context
+RUN pnpm install --frozen-lockfile
 
-# ✅ Build TypeScript
-RUN pnpm run build
+# Build the auth-server
+RUN pnpm --filter auth-server build
+
+# Create a pruned production copy with dependencies
+RUN pnpm deploy --filter auth-server --prod /tmp/auth-server-prod
 
 # Stage 2: Production Stage
 FROM node:20-slim as runner
 
 WORKDIR /app
 
-# ✅ Copy compiled JS files from builder stage
-COPY --from=builder /app/dist ./dist
-
-# ✅ Copy node_modules from builder instead of running pnpm again
-COPY --from=builder /app/node_modules ./node_modules
-
-# ✅ Copy package.json for runtime
-COPY --from=builder /app/package.json ./
+# Copy only the production files
+COPY --from=builder /tmp/auth-server-prod/node_modules ./node_modules
+COPY --from=builder /app/auth-server/dist ./dist
 
 EXPOSE 4000
 
-# ✅ Start the server using pre-compiled JS
-CMD ["node", "dist/index.js"]
+# Start the server
+ CMD ["node", "dist/index.js"]
